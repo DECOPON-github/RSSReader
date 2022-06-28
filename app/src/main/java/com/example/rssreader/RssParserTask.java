@@ -30,6 +30,7 @@ public class RssParserTask extends AsyncTask<String, Integer, RssListAdapter> {
     private Activity_Home mActivity;
     private RssListAdapter mAdapter;
     private ProgressDialog mProgressDialog;
+    private NodeList mSite;
 
     private static enum Namespace {
         DC      ("http://purl.org/dc/elements/1.1/"),
@@ -67,14 +68,9 @@ public class RssParserTask extends AsyncTask<String, Integer, RssListAdapter> {
         RssListAdapter result = null;
         try {
             // HTTP経由でアクセスし、InputStreamを取得する
-            //for (String url : params) {
-            //    result = parseXml(url);
-            //}
-
-
-            URL url = new URL(params[0]);
-            InputStream is = url.openConnection().getInputStream();
-            result = parseXml(is);
+            for (String url : params) {
+                result = parseXml(url);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,58 +85,18 @@ public class RssParserTask extends AsyncTask<String, Integer, RssListAdapter> {
         mActivity.setListAdapter(result);
     }
 
-    // XMLをパースする
-    //public RssListAdapter parseXml(InputStream is) throws IOException, XmlPullParserException {
-    //    XmlPullParser parser = Xml.newPullParser();
-    //    try {
-    //        parser.setInput(is, null);
-    //        int eventType = parser.getEventType();
-    //        Item_Article currentItem = null;
-    //        while (eventType != XmlPullParser.END_DOCUMENT) {
-    //            String tag = null;
-    //            switch (eventType) {
-    //                case XmlPullParser.START_TAG:
-    //                    tag = parser.getName();
-    //                    if (tag.equals("item")) {
-    //                        currentItem = new Item_Article();
-    //                    } else if (currentItem != null) {
-    //                        if (tag.equals("title")) {
-    //                            currentItem.setTitle(parser.nextText());
-    //                        } else if (tag.equals("link")) {
-    //                            currentItem.setUrl(parser.nextText());
-    //                        } else if (tag.equals("pubDate")) {
-    //                            currentItem.setDate(transDate(parser.nextText()));
-    //                        }
-    //                    }
-    //                    break;
-    //                case XmlPullParser.END_TAG:
-    //                    tag = parser.getName();
-    //                    if (tag.equals("item")) {
-    //                        mAdapter.add(currentItem);
-    //                    }
-    //                    break;
-    //            }
-    //            eventType = parser.next();
-    //        }
-    //    } catch (Exception e) {
-    //        e.printStackTrace();
-    //    }
-    //    return mAdapter;
-    //}
-
-    public RssListAdapter parseXml(InputStream path) {
+    public RssListAdapter parseXml(String url) {
         try {
             Item_Article currentItem = null;
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(path);
+            Document document = builder.parse(url);
             Element root = document.getDocumentElement();
 
             /* Get and print Title of RSS Feed. */
             NodeList channel = root.getElementsByTagName("channel");
-            NodeList title = ((Element)channel.item(0)).getElementsByTagName("title");
-            System.out.println("\nTitle: " + title.item(0).getFirstChild().getNodeValue() + "\n");
+            mSite = ((Element)channel.item(0)).getElementsByTagName("title");
 
             /* Get Node list of RSS items */
             NodeList item_list = root.getElementsByTagName("item");
@@ -149,12 +105,13 @@ public class RssParserTask extends AsyncTask<String, Integer, RssListAdapter> {
                 Element  element = (Element)item_list.item(i);
                 NodeList item_title = element.getElementsByTagName("title");
                 NodeList item_link  = element.getElementsByTagName("link");
-                NodeList item_date  = element.getElementsByTagName("pubDate");
-                //NodeList item_date = element.getElementsByTagNameNS(Namespace.DC.uri(), "date");
-                System.out.println(" Title: " + item_title.item(0).getFirstChild().getNodeValue());
-                System.out.println(" Date: " + item_date.item(0).getFirstChild().getNodeValue());
-                System.out.println(" Link:  " + item_link.item(0).getFirstChild().getNodeValue() + "\n");
-                currentItem.setSite(title.item(0).getFirstChild().getNodeValue());
+                NodeList item_date;
+                if (mSite.item(0).getFirstChild().getNodeValue().equals("ワイらのまとめ")) {
+                    item_date  = element.getElementsByTagName("pubDate");
+                } else {
+                    item_date = element.getElementsByTagNameNS(Namespace.DC.uri(), "date");
+                }
+                currentItem.setSite(mSite.item(0).getFirstChild().getNodeValue());
                 currentItem.setTitle(item_title.item(0).getFirstChild().getNodeValue());
                 currentItem.setDate(transDate(item_date.item(0).getFirstChild().getNodeValue()));
                 currentItem.setUrl(item_link.item(0).getFirstChild().getNodeValue());
@@ -174,16 +131,14 @@ public class RssParserTask extends AsyncTask<String, Integer, RssListAdapter> {
 
     private String transDate (String date) throws ParseException {
         SimpleDateFormat sdf_in_1 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-        //SimpleDateFormat sdf_in_2 = new SimpleDateFormat("yyyy-MM-DD" + "T" + "HH:mm:ss Z");
+        SimpleDateFormat sdf_in_2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         SimpleDateFormat sdf_out = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        Date tDate = sdf_in_1.parse(date);
-        //sdf_in_1.setLenient(false);
-
-        //try {
-        //    sdf_in_2.format(sdf_in_2.parse(date));
-        //}catch (ParseException p) {
-        //    p.printStackTrace();
-        //}
+        Date tDate;
+        if (mSite.item(0).getFirstChild().getNodeValue().equals("ワイらのまとめ")) {
+            tDate = sdf_in_1.parse(date);
+        } else {
+            tDate = sdf_in_2.parse(date);
+        }
 
         return sdf_out.format(tDate);
     }

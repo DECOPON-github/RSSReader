@@ -14,7 +14,9 @@ import com.example.rssreader.RssParserTask;
 import java.util.ArrayList;
 
 public class Activity_Home extends ListActivity {
-    public static final String RSS_FEED_URL = "https://wairamatome.com/feed"; //"http://majikichi.com/index.rdf";
+    public static final String RSS_FEED_URL[] = {"https://wairamatome.com/feed",
+                                                 "http://blog.livedoor.jp/nwknews/index.rdf",
+                                                 "http://majikichi.com/index.rdf"};
     private ArrayList mItems;
     private RssListAdapter mAdapter;
 

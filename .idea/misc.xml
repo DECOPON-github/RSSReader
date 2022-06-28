@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/drawable/style_splash.xml" value="0.185" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_webview.xml" value="0.16304347826086957" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/item_detail.xml" value="0.16304347826086957" />
