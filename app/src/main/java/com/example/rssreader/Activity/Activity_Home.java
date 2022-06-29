@@ -1,5 +1,7 @@
 package com.example.rssreader.Activity;
 
+import static com.example.rssreader.Constants.RSS_FEED_URL;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +11,11 @@ import android.widget.ListView;
 import com.example.rssreader.Item_Article;
 import com.example.rssreader.R;
 import com.example.rssreader.RssListAdapter;
-import com.example.rssreader.RssParserTask;
+import com.example.rssreader.Task_RssParser;
 
 import java.util.ArrayList;
 
 public class Activity_Home extends ListActivity {
-    public static final String RSS_FEED_URL[] = {"https://wairamatome.com/feed",
-                                                 "http://blog.livedoor.jp/nwknews/index.rdf",
-                                                 "http://majikichi.com/index.rdf"};
     private ArrayList mItems;
     private RssListAdapter mAdapter;
 
@@ -26,12 +25,12 @@ public class Activity_Home extends ListActivity {
         setContentView(R.layout.activity_main);
 
         // Itemオブジェクトを保持するためのリストを生成し、アダプタに追加する
-        mItems = new ArrayList();
-        mAdapter = new RssListAdapter(this, mItems);
+        //mItems = new ArrayList();
+        //mAdapter = new RssListAdapter(this, mItems);
 
         // タスクを起動する
-        RssParserTask task = new RssParserTask(this, mAdapter);
-        task.execute(RSS_FEED_URL);
+        //Task_RssParser task = new Task_RssParser(this, mAdapter);
+        //task.execute(RSS_FEED_URL);
     }
 
     // リストの項目を選択した時の処理
