@@ -27,6 +27,8 @@ public class Activity_Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mFlagInit = false;
+
         //　Siteテーブル更新
         mDbAdapterArticle = new DbAdapter_Article(this);
         mDbAdapterArticle.open();
@@ -34,7 +36,7 @@ public class Activity_Splash extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             // サイト追加・削除時の処理
             if (cursor.getCount() != RSS_FEED_SITE.length) {
-                // 保留
+                updateSite();
             }
             cursor.close();
         } else {
@@ -63,6 +65,25 @@ public class Activity_Splash extends AppCompatActivity {
             mDbAdapterArticle.success();
         } catch (Exception e) {
             Log.e("insertSite", e.getMessage());
+        } finally {
+            mDbAdapterArticle.end();
+        }
+    }
+
+    // *未完成 - サイト数が減ったときの処理ができていない
+    private void updateSite () {
+        try {
+            mDbAdapterArticle.begin();
+
+            mDbAdapterArticle.deleteTableSite();
+
+            for (String site : RSS_FEED_SITE) {
+                mDbAdapterArticle.saveItemSite(site);
+            }
+
+            mDbAdapterArticle.success();
+        }  catch (Exception e) {
+            Log.e("updateSite", e.getMessage());
         } finally {
             mDbAdapterArticle.end();
         }
@@ -99,7 +120,8 @@ public class Activity_Splash extends AppCompatActivity {
                 deleteArticle();
                 mDbAdapterArticle.close();
 
-                Intent intent = new Intent(getApplicationContext(), Activity_Home.class);
+                //Intent intent = new Intent(getApplicationContext(), Activity_Home.class);
+                Intent intent = new Intent(getApplicationContext(), Activity_Navigation.class);
                 startActivity(intent);
                 finish();
             }

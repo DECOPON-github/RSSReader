@@ -1,7 +1,13 @@
 package com.example.rssreader;
 
+import static android.content.ContentValues.TAG;
+
+import static com.example.rssreader.Constants.NUM_CURRENT_ARTICLE;
+
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.LocalSocketAddress;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -73,25 +80,8 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
 
         mDbAdapterArticle = new DbAdapter_Article(mContext);
         mDbAdapterArticle.open();
-        try {
-            mDbAdapterArticle.begin();
-
-            for (Item_Article article : result) {
-                int id_site = mDbAdapterArticle.getIdSite(article.getSite().toString());
-                String tTitle = article.getTitle().toString();
-                String tDate = article.getDate().toString();
-                String tUrl = article.getUrl().toString();
-                int tRead = mDbAdapterArticle.isReadArticle(tUrl);
-
-                mDbAdapterArticle.saveItemArticle(id_site, tTitle, tDate, tUrl, tRead);
-            }
-
-            mDbAdapterArticle.success();
-        } catch (Exception e) {
-            Log.e("insertArticle", e.getMessage());
-        } finally {
-            mDbAdapterArticle.end();
-        }
+        insertArticle(result);
+        refreshId();
         mDbAdapterArticle.close();
 
         // ここで返した値は、onPostExecuteメソッドの引数として渡される
@@ -115,6 +105,78 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
      */
     public static class CallBackTask {
         public void CallBack(Boolean flag) {
+        }
+    }
+
+    private void insertArticle (ArrayList<Item_Article> articles) {
+        try {
+            mDbAdapterArticle.begin();
+
+            for (Item_Article article : articles) {
+                int id_site = mDbAdapterArticle.getIdSite(article.getSite().toString());
+                String tTitle = article.getTitle().toString();
+                String tDate = article.getDate().toString();
+                String tUrl = article.getUrl().toString();
+                int tRead = mDbAdapterArticle.isReadArticle(tUrl);
+
+                mDbAdapterArticle.saveItemArticle(id_site, tTitle, tDate, tUrl, tRead);
+            }
+
+            mDbAdapterArticle.success();
+        } catch (Exception e) {
+            Log.e("insertArticle", e.getMessage());
+        } finally {
+            mDbAdapterArticle.end();
+        }
+    }
+
+    @SuppressLint("Range")
+    private void refreshId () {
+        ArrayList<Item_Article> articles = new ArrayList<Item_Article>();
+
+        try {
+            mDbAdapterArticle.begin();
+
+            Item_Article currentItem = null;
+            Cursor cursor = mDbAdapterArticle.getTableArticle();
+            NUM_CURRENT_ARTICLE = cursor.getCount();
+
+            if (cursor.moveToFirst()) {
+                // articleのデータを一時保存
+                do {
+                    if (cursor.getInt(cursor.getColumnIndex(DbAdapter_Article.COL_ID_SITE)) != 0) {
+                        currentItem = new Item_Article();
+                        currentItem.setSite(mDbAdapterArticle.getSite(cursor.getInt(cursor.getColumnIndex(DbAdapter_Article.COL_ID_SITE))));
+                        currentItem.setTitle(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_TITLE)));
+                        currentItem.setDate(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_DATE)));
+                        currentItem.setUrl(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_URL)));
+                        //currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
+                        //currentItem.setPopular(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_POPULAR)));
+                        articles.add(currentItem);
+                    }
+                } while (cursor.moveToNext());
+
+                // articleテーブル・ID削除
+                mDbAdapterArticle.deleteTableArticle();
+
+                // 一時保存データをarticleテーブルに挿入
+                for (Item_Article article : articles) {
+                    int id_site = mDbAdapterArticle.getIdSite(article.getSite().toString());
+                    String tTitle = article.getTitle().toString();
+                    String tDate = article.getDate().toString();
+                    String tUrl = article.getUrl().toString();
+                    //int tRead = Integer.parseInt(article.getRead().toString());
+                    int tRead = 0;
+                    mDbAdapterArticle.saveItemArticle(id_site, tTitle, tDate, tUrl, tRead);
+                }
+            }
+
+            cursor.close();
+            mDbAdapterArticle.success();
+        } catch (Exception e) {
+            Log.e("refreshId",  e.getMessage());
+        } finally {
+            mDbAdapterArticle.end();
         }
     }
 
@@ -168,6 +230,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
         SimpleDateFormat sdf_in_1 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
         SimpleDateFormat sdf_in_2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         SimpleDateFormat sdf_out = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        sdf_out.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
         Date tDate;
         if (site.equals("ワイらのまとめ")) {
             tDate = sdf_in_1.parse(date);

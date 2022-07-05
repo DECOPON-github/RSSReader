@@ -33,6 +33,10 @@
         </activity>
 
         <activity
+            android:name=".Activity.Activity_Navigation">
+        </activity>
+
+        <activity
             android:name=".Activity.Activity_Webview">
         </activity>
 
