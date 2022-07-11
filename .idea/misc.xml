@@ -5,11 +5,13 @@
       <map>
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/drawable/style_navigation.xml" value="0.1905" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/drawable/style_splash.xml" value="0.185" />
+        <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_article.xml" value="0.2128623188405797" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_navigation.xml" value="0.16304347826086957" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_navigation_menu.xml" value="0.16304347826086957" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/activity_webview.xml" value="0.16304347826086957" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/item_detail.xml" value="0.16304347826086957" />
+        <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/item_footer.xml" value="0.2128623188405797" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/layout/item_row.xml" value="0.1796875" />
         <entry key="..\:/Users/the_h/AndroidStudioProjects/RSSReader/app/src/main/res/xml/network_security_config.xml" value="0.16304347826086957" />
       </map>

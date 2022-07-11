@@ -34,6 +34,6 @@ public class Constants {
     // ListViewの表示量
     public static int NUM_CURRENT_ARTICLE;
     public static final int NUM_LOAD_ARTICLE = 50;
-    public static final int NUM_MAX_ARTICLE_NEW = 500;
+    public static final int NUM_MAX_ARTICLE = 500;
     public static final int NUM_MAX_ARTICLE_POPULAR = 100;
 }

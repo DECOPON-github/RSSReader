@@ -3,6 +3,7 @@ package com.example.rssreader;
 import static android.content.ContentValues.TAG;
 
 import static com.example.rssreader.Constants.NUM_CURRENT_ARTICLE;
+import static com.example.rssreader.Debug.DEBUG_MODE;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -26,6 +27,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,11 +66,12 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
 
     // タスクを実行した直後にコールされる
     @Override
-    protected void onPreExecute() { }
+    protected void onPreExecute() { if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - onPreExecute");} }
 
     // バックグラウンドにおける処理を担う。タスク実行時に渡された値を引数とする
     @Override
     protected ArrayList<Item_Article> doInBackground(String... params) {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - doInBackground");}
         ArrayList<Item_Article> result = new ArrayList<Item_Article>();
         try {
             for (String url : params) {
@@ -91,6 +94,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
     // メインスレッド上で実行される
     @Override
     protected void onPostExecute(ArrayList<Item_Article> result) {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - onPostExecute");}
         if (!result.isEmpty()) {
             callbacktask.CallBack(true);
         }
@@ -109,6 +113,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
     }
 
     private void insertArticle (ArrayList<Item_Article> articles) {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - insertArticle");}
         try {
             mDbAdapterArticle.begin();
 
@@ -132,6 +137,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
 
     @SuppressLint("Range")
     private void refreshId () {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - refreshId");}
         ArrayList<Item_Article> articles = new ArrayList<Item_Article>();
 
         try {
@@ -181,6 +187,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
     }
 
     public ArrayList<Item_Article> parseXml(String url) {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - parseXml");}
         ArrayList<Item_Article> Items = null;
         try {
             Item_Article currentItem = null;
@@ -188,7 +195,10 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(url);
+            URL mUrl = new URL(url);
+            URLConnection con = mUrl.openConnection();
+            con.setConnectTimeout(3000);
+            Document document = builder.parse(con.getInputStream());
             Element root = document.getDocumentElement();
 
             String tSite;
@@ -227,6 +237,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
     }
 
     private String transDate (String date, String site) throws ParseException {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Task_RssParser - transDate");}
         SimpleDateFormat sdf_in_1 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
         SimpleDateFormat sdf_in_2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         SimpleDateFormat sdf_out = new SimpleDateFormat("yyyy/MM/dd HH:mm");

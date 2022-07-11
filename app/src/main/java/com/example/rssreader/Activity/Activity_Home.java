@@ -1,7 +1,6 @@
 package com.example.rssreader.Activity;
 
 import static com.example.rssreader.Constants.NUM_LOAD_ARTICLE;
-import static com.example.rssreader.Constants.RSS_FEED_URL;
 
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
@@ -14,14 +13,13 @@ import android.widget.ListView;
 import com.example.rssreader.DbAdapter_Article;
 import com.example.rssreader.Item_Article;
 import com.example.rssreader.R;
-import com.example.rssreader.RssListAdapter;
-import com.example.rssreader.Task_RssParser;
+import com.example.rssreader.ListAdapter_Article;
 
 import java.util.ArrayList;
 
 public class Activity_Home extends ListActivity {
     private ArrayList mItems;
-    private RssListAdapter mAdapter;
+    private ListAdapter_Article mAdapter;
     private DbAdapter_Article mDbAdapterArticle;
     private int listPos;
 
@@ -29,13 +27,13 @@ public class Activity_Home extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_article);
 
         listPos = 0;
 
         // Itemオブジェクトを保持するためのリストを生成し、アダプタに追加する
         mItems = new ArrayList();
-        mAdapter = new RssListAdapter(this, mItems);
+        mAdapter = new ListAdapter_Article(this, mItems);
 
         mDbAdapterArticle = new DbAdapter_Article(this);
         mDbAdapterArticle.open();

@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class RssListAdapter extends ArrayAdapter<Item_Article> {
+public class ListAdapter_Article extends ArrayAdapter<Item_Article> {
     private LayoutInflater mInflater;
     private TextView mSite;
     private TextView mTitle;
     private TextView mDate;
 
-    public RssListAdapter(Context context, List<Item_Article> objects) {
+    public ListAdapter_Article(Context context, List<Item_Article> objects) {
         super(context, 0,objects);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

@@ -1,6 +1,9 @@
 package com.example.rssreader.Activity;
 
+import static com.example.rssreader.Debug.DEBUG_MODE;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -30,6 +33,7 @@ public class Activity_Navigation extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Activity_Navigation - onCreate");}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
