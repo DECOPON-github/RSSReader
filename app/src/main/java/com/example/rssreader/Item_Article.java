@@ -10,14 +10,14 @@ public class Item_Article {
     // 記事のURL
     private CharSequence mUrl;
     // 記事の本文
-    private CharSequence mDescription;
+    private CharSequence mRead;
 
     public Item_Article() {
         mSite = "";
         mTitle = "";
         mDate = "";
         mUrl = "";
-        mDescription = "";
+        mRead = "";
     }
 
     public CharSequence getSite() {
@@ -51,4 +51,8 @@ public class Item_Article {
     public void setUrl(CharSequence url) {
         mUrl = url;
     }
+
+    public CharSequence getRead() { return mRead; }
+
+    public void setRead(CharSequence read) { mRead = read; }
 }

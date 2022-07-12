@@ -2,6 +2,8 @@ package com.example.rssreader;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.rssreader.Constants.FLAG_NO_READ;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +47,15 @@ public class ListAdapter_Article extends ArrayAdapter<Item_Article> {
             String date = item.getDate().toString();
             mDate = (TextView) view.findViewById(R.id.date);
             mDate.setText(date);
+
+            View read = view.findViewById(R.id.read);
+            Log.d(TAG, "getView: " + item.getTitle().toString());
+            Log.d(TAG, "getView: " + item.getRead().toString());
+            if (Integer.parseInt(item.getRead().toString()) == FLAG_NO_READ) {
+                read.setVisibility(View.INVISIBLE);
+            } else {
+                read.setVisibility(View.VISIBLE);
+            }
         }
         return view;
     }

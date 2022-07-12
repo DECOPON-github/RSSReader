@@ -156,7 +156,7 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
                         currentItem.setTitle(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_TITLE)));
                         currentItem.setDate(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_DATE)));
                         currentItem.setUrl(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_URL)));
-                        //currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
+                        currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
                         //currentItem.setPopular(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_POPULAR)));
                         articles.add(currentItem);
                     }
@@ -171,8 +171,8 @@ public class Task_RssParser extends AsyncTask<String, Integer, ArrayList<Item_Ar
                     String tTitle = article.getTitle().toString();
                     String tDate = article.getDate().toString();
                     String tUrl = article.getUrl().toString();
-                    //int tRead = Integer.parseInt(article.getRead().toString());
-                    int tRead = 0;
+                    int tRead = Integer.parseInt(article.getRead().toString());
+                    //int tRead = 0;
                     mDbAdapterArticle.saveItemArticle(id_site, tTitle, tDate, tUrl, tRead);
                 }
             }

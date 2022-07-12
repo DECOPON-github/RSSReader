@@ -1,5 +1,6 @@
 package com.example.rssreader.Fragment;
 
+import static com.example.rssreader.Constants.FLAG_READ;
 import static com.example.rssreader.Constants.NUM_CURRENT_ARTICLE;
 import static com.example.rssreader.Constants.NUM_LOAD_ARTICLE;
 import static com.example.rssreader.Constants.NUM_MAX_ARTICLE;
@@ -43,6 +44,9 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
     private Boolean isInit;
     private Boolean isLoad;
     private Boolean isLast;
+    private Boolean isStart;
+
+    public Fragment_Article() { isStart = true; }
 
     @Nullable
     @Override
@@ -98,25 +102,51 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
         intent.putExtra("DATE", item.getDate());
         intent.putExtra("URL", item.getUrl());
         startActivity(intent);
+
+        item.setRead(String.valueOf(FLAG_READ));
+        updateRead(item.getUrl().toString());
     }
 
-    @Override
-    public void onRefresh() {
-        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Fragment_Article - onRefresh");}
+    @SuppressLint("Range")
+    private void refreshListView () {
+        if ( DEBUG_MODE ) { Log.d("DEBUG_MODE", "Fragment_Article - refreshListView"); }
 
-        setVisibility(View.INVISIBLE);
-        Task_RssParser task = new Task_RssParser(this.getContext());
-        task.execute(RSS_FEED_URL);
-        task.setOnCallBack(new Task_RssParser.CallBackTask() {
-            @Override
-            public void CallBack(Boolean flag) {
-                super.CallBack(flag);
+        mDbAdapterArticle = new DbAdapter_Article(getContext());
+        mDbAdapterArticle.open();
+        Cursor cursor = mDbAdapterArticle.getTableArticle(DbAdapter_Article.COL_DATE + " DESC", 0, listPos);
 
-                initStart();
-                setVisibility(View.VISIBLE);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        if (cursor.moveToFirst()) {
+            int i = 0;
+            do {
+                if (!mAdapter.getItem(i).getRead().equals(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)))) {
+                    mAdapter.getItem(i).setRead(String.valueOf(FLAG_READ));
+                }
+                i++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        mDbAdapterArticle.close();
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void updateRead (String url) {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Fragment_Article - updateRead");}
+        mDbAdapterArticle.open();
+
+        try {
+            mDbAdapterArticle.begin();
+
+            mDbAdapterArticle.updateReadArticle(url);
+
+            mDbAdapterArticle.success();
+        } catch (Exception e) {
+            Log.e("updateRead", e.getMessage());
+        } finally {
+            mDbAdapterArticle.end();
+        }
+
+        mDbAdapterArticle.close();
     }
 
     private void initListAdapter () {
@@ -140,7 +170,7 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
                 currentItem.setTitle(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_TITLE)));
                 currentItem.setDate(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_DATE)));
                 currentItem.setUrl(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_URL)));
-                //currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
+                currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
                 mAdapter.add(currentItem);
             } while (cursor.moveToNext());
         }
@@ -195,7 +225,7 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
                 currentItem.setTitle(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_TITLE)));
                 currentItem.setDate(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_DATE)));
                 currentItem.setUrl(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_URL)));
-                //currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
+                currentItem.setRead(cursor.getString(cursor.getColumnIndex(DbAdapter_Article.COL_READ)));
                 mAdapter.add(currentItem);
             } while (cursor.moveToNext());
         }
@@ -220,5 +250,42 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
         }
 
         mListView.setVisibility(visibility);
+    }
+
+    @Override
+    public void onRefresh() {
+        if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Fragment_Article - onRefresh");}
+
+        setVisibility(View.INVISIBLE);
+        Task_RssParser task = new Task_RssParser(this.getContext());
+        task.execute(RSS_FEED_URL);
+        task.setOnCallBack(new Task_RssParser.CallBackTask() {
+            @Override
+            public void CallBack(Boolean flag) {
+                super.CallBack(flag);
+
+                initStart();
+                setVisibility(View.VISIBLE);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    @Override
+    public void onStart () {
+        super.onStart();
+        if (!isStart) {
+            if ( DEBUG_MODE ) { Log.d("DEBUG_MODE", "Fragment_Article - onStart"); }
+            refreshListView();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isStart) {
+            if ( DEBUG_MODE ) { Log.d("DEBUG_MODE", "Fragment_Article - onResume"); }
+            isStart = false;
+        }
     }
 }
