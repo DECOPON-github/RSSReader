@@ -1,31 +1,23 @@
 package com.example.rssreader;
 
-import static android.content.ContentValues.TAG;
-
 import static com.example.rssreader.Constants.NUM_CURRENT_ARTICLE;
 import static com.example.rssreader.Debug.DEBUG_MODE;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.LocalSocketAddress;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.Xml;
 
-import com.example.rssreader.Activity.Activity_Home;
-import com.example.rssreader.Activity.Activity_Splash;
+import com.example.rssreader.DbAdapter.DbAdapter_Article;
+import com.example.rssreader.Item.Item_Article;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;

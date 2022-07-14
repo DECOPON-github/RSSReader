@@ -1,4 +1,4 @@
-package com.example.rssreader;
+package com.example.rssreader.DbAdapter;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 import static com.example.rssreader.Constants.FLAG_NO_READ;

@@ -12,7 +12,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rssreader.DbAdapter_Article;
+import com.example.rssreader.DbAdapter.DbAdapter_Article;
 import com.example.rssreader.Task_RssParser;
 
 import java.text.SimpleDateFormat;

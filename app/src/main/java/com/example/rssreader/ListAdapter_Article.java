@@ -1,16 +1,15 @@
 package com.example.rssreader;
 
-import static android.content.ContentValues.TAG;
-
 import static com.example.rssreader.Constants.FLAG_NO_READ;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.example.rssreader.Item.Item_Article;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class ListAdapter_Article extends ArrayAdapter<Item_Article> {
         View view = convertView;
 
         if (convertView == null) {
-            view = mInflater.inflate(R.layout.item_row, null);
+            view = mInflater.inflate(R.layout.item_row_article, null);
         }
 
         // 現在参照しているリストの位置からItemを取得する
@@ -49,8 +48,6 @@ public class ListAdapter_Article extends ArrayAdapter<Item_Article> {
             mDate.setText(date);
 
             View read = view.findViewById(R.id.read);
-            Log.d(TAG, "getView: " + item.getTitle().toString());
-            Log.d(TAG, "getView: " + item.getRead().toString());
             if (Integer.parseInt(item.getRead().toString()) == FLAG_NO_READ) {
                 read.setVisibility(View.INVISIBLE);
             } else {

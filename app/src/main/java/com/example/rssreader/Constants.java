@@ -36,4 +36,7 @@ public class Constants {
     public static final int NUM_LOAD_ARTICLE = 50;
     public static final int NUM_MAX_ARTICLE = 500;
     public static final int NUM_MAX_ARTICLE_POPULAR = 100;
+
+    // お気に入りの限度
+    public static final int NUM_MAX_FAVORITE = 1000;
 }

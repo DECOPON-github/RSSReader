@@ -1,4 +1,4 @@
-package com.example.rssreader;
+package com.example.rssreader.Item;
 
 public class Item_Article {
     // 記事の元サイト

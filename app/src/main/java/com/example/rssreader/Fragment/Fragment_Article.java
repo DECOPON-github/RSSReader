@@ -4,10 +4,12 @@ import static com.example.rssreader.Constants.FLAG_READ;
 import static com.example.rssreader.Constants.NUM_CURRENT_ARTICLE;
 import static com.example.rssreader.Constants.NUM_LOAD_ARTICLE;
 import static com.example.rssreader.Constants.NUM_MAX_ARTICLE;
+import static com.example.rssreader.Constants.NUM_MAX_FAVORITE;
 import static com.example.rssreader.Constants.RSS_FEED_URL;
 import static com.example.rssreader.Debug.DEBUG_MODE;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -24,8 +27,9 @@ import androidx.fragment.app.ListFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.rssreader.Activity.Activity_Webview;
-import com.example.rssreader.DbAdapter_Article;
-import com.example.rssreader.Item_Article;
+import com.example.rssreader.DbAdapter.DbAdapter_Article;
+import com.example.rssreader.DbAdapter.DbAdapter_Favorite;
+import com.example.rssreader.Item.Item_Article;
 import com.example.rssreader.R;
 import com.example.rssreader.ListAdapter_Article;
 import com.example.rssreader.Task_RssParser;
@@ -36,6 +40,7 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
     private ArrayList mItems;
     private ListAdapter_Article mAdapter;
     private DbAdapter_Article mDbAdapterArticle;
+    private DbAdapter_Favorite mDbAdapterFavorite;
     private ListView mListView;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -52,7 +57,7 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Fragment_Article - onCreateView");}
-        View v = inflater.inflate(R.layout.activity_article, container, false);
+        View v = inflater.inflate(R.layout.fragment_article, container, false);
 
         findView(v);
         setVisibility(View.INVISIBLE);
@@ -206,6 +211,20 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
                 }
             }
         });
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if ( DEBUG_MODE ) { Log.d("DEBUG_MODE", "Fragment_Article - initListView - onItemLongClick"); }
+                Item_Article item = (Item_Article) mItems.get(position);
+                String tTitle = item.getTitle().toString();
+                String tDate = item.getDate().toString();
+                String tUrl = item.getUrl().toString();
+                String tSite = item.getSite().toString();
+                mDbAdapterFavorite = new DbAdapter_Favorite(getContext());
+                insertFavorite(tTitle, tDate, tUrl, tSite);
+                return true;
+            }
+        });
 
         initEnd();
     }
@@ -233,6 +252,53 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
         mDbAdapterArticle.close();
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void insertFavorite (String title,String date, String url, String site) {
+        mDbAdapterFavorite.open();
+        Cursor cursor = mDbAdapterFavorite.getTable();
+
+        try {
+            mDbAdapterFavorite.begin();
+
+            if (mDbAdapterFavorite.isUrl(url)) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("お気に入り")
+                        .setMessage("既に追加されています\n追加できません")
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
+            else if (cursor.getCount() == NUM_MAX_FAVORITE) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("お気に入り")
+                        .setMessage("最大数に達しました\n追加できません")
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
+            else if (cursor.getCount() < NUM_MAX_FAVORITE) {
+                mDbAdapterFavorite.saveItem(title, date, url, site);
+                mDbAdapterFavorite.success();
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("お気に入り")
+                        .setMessage("追加しました")
+                        .setPositiveButton("OK", null)
+                        .show();
+            } else {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("お気に入り")
+                        .setMessage("エラーが発生しました\n追加できません")
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
+        } catch (Exception e) {
+            Log.e("insertFavorite",  e.getMessage());
+        } finally {
+            mDbAdapterFavorite.end();
+        }
+
+        cursor.close();
+        mDbAdapterFavorite.close();
     }
 
     private void findView (View v) {

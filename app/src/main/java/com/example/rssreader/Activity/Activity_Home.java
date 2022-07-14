@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import com.example.rssreader.DbAdapter_Article;
-import com.example.rssreader.Item_Article;
+import com.example.rssreader.DbAdapter.DbAdapter_Article;
+import com.example.rssreader.Item.Item_Article;
 import com.example.rssreader.R;
 import com.example.rssreader.ListAdapter_Article;
 
@@ -27,7 +27,7 @@ public class Activity_Home extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article);
+        setContentView(R.layout.fragment_article);
 
         listPos = 0;
 
