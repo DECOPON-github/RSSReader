@@ -5,19 +5,19 @@
     android:layout_width="wrap_content" >
 
     <item
+        android:id="@+id/nav_popular"
+        android:icon="@drawable/img_navigation_popular"
+        android:title="@string/nav_popular" />
+
+    <item
         android:id="@+id/nav_article"
         android:icon="@drawable/img_navigation_article"
-        android:title="@string/nav_article"/>
+        android:title="@string/nav_article" />
 
     <item
         android:id="@+id/nav_search"
         android:icon="@drawable/img_navigation_search"
-        android:title="@string/nav_search"/>
-
-    <item
-        android:id="@+id/nav_site"
-        android:icon="@drawable/img_navigation_site"
-        android:title="@string/nav_site"/>
+        android:title="@string/nav_search" />
 
     <item
         android:id="@+id/nav_favorite"

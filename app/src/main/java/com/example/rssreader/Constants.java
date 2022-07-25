@@ -39,4 +39,20 @@ public class Constants {
 
     // お気に入りの限度
     public static final int NUM_MAX_FAVORITE = 1000;
+
+    // ACTION_VIEWのフラグ
+    public static final int FLAG_ON_ACTIONVIEW = 1;
+    public static final int FLAG_OFF_ACTIONVIEW = 0;
+
+    public static final String[] DOMAIN_REGISTER = {
+            "alfalfalfa.com",
+            "news4vip.livedoor.biz",
+            "himasoku.com",
+            "blog.livedoor.jp/news23vip",
+            "kanasoku.info",
+            "blog.livedoor.jp/nwknews",
+            "workingnews.blog117.fc2.com",
+            "michaelsan.livedoor.biz",
+            "chaos2ch.com"
+    };
 }

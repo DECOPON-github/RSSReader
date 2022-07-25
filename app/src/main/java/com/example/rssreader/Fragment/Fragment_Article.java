@@ -26,7 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.rssreader.Activity.Activity_Webview;
+import com.example.rssreader.Activity.Activity_WebView;
 import com.example.rssreader.DbAdapter.DbAdapter_Article;
 import com.example.rssreader.DbAdapter.DbAdapter_Favorite;
 import com.example.rssreader.Item.Item_Article;
@@ -102,7 +102,7 @@ public class Fragment_Article extends ListFragment implements SwipeRefreshLayout
         if (DEBUG_MODE) { Log.d("DEBUG_MODE", "Fragment_Article - onListItemClick");}
         Item_Article item = (Item_Article) mItems.get(position);
 
-        Intent intent = new Intent(this.getContext(), Activity_Webview.class);
+        Intent intent = new Intent(this.getContext(), Activity_WebView.class);
         intent.putExtra("TITLE", item.getTitle());
         intent.putExtra("DATE", item.getDate());
         intent.putExtra("URL", item.getUrl());

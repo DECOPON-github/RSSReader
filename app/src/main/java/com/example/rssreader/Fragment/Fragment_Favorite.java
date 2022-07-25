@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rssreader.Activity.Activity_Webview;
+import com.example.rssreader.Activity.Activity_WebView;
 import com.example.rssreader.DbAdapter.DbAdapter_Favorite;
 import com.example.rssreader.Function.ItemMoveCallback;
 import com.example.rssreader.Function.StartDragListener;
@@ -88,7 +88,7 @@ public class Fragment_Favorite extends Fragment implements StartDragListener {
             @Override
             public void onItemClick(View view, int position, List<Item_Favorite> item) {
                 Item_Favorite tItem = mItems.get(position);
-                Intent intent = new Intent(getContext(), Activity_Webview.class);
+                Intent intent = new Intent(getContext(), Activity_WebView.class);
 
                 intent.putExtra("TITLE", tItem.getTitle());
                 intent.putExtra("DATE", tItem.getDate());

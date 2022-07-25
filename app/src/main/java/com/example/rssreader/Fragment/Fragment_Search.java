@@ -23,10 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
-import com.example.rssreader.Activity.Activity_Webview;
+import com.example.rssreader.Activity.Activity_WebView;
 import com.example.rssreader.DbAdapter.DbAdapter_Article;
 import com.example.rssreader.DbAdapter.DbAdapter_Favorite;
 import com.example.rssreader.Item.Item_Article;
@@ -151,7 +150,7 @@ public class Fragment_Search extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Item_Article item = (Item_Article) mItems.get(position);
 
-        Intent intent = new Intent(this.getContext(), Activity_Webview.class);
+        Intent intent = new Intent(this.getContext(), Activity_WebView.class);
         intent.putExtra("TITLE", item.getTitle());
         intent.putExtra("DATE", item.getDate());
         intent.putExtra("URL", item.getUrl());

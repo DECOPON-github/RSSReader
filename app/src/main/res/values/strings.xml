@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">まとめサイトリーダー</string>
 
+    <string name="nav_popular">人気記事</string>
     <string name="nav_article">記事一覧</string>
     <string name="nav_search">記事検索</string>
-    <string name="nav_site">サイト別</string>
     <string name="nav_favorite">お気に入り</string>
 
     <string name="list_search">検索</string>
